@@ -18,7 +18,7 @@ export const profile = {
   resumeUrl: "/Pritam_Kumar_Resume.pdf",
   initials: "PK",
   /** Drop a square photo at public/profile.jpg and set this to "/profile.jpg". Empty → monogram. */
-  photo: "",
+  photo: "/image.png",
 } as const;
 
 export const stats: { value: number; suffix: string; label: string }[] = [
@@ -180,8 +180,16 @@ export type Social = {
 };
 
 export const socials: Social[] = [
-  { label: "GitHub", href: "https://github.com/", handle: "GitHub" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/", handle: "LinkedIn" },
+  {
+    label: "GitHub",
+    href: "https://github.com/CodeSurgeonPritam/",
+    handle: "@CodeSurgeonPritam",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/pritammkumar/",
+    handle: "@pritammkumar",
+  },
   { label: "Email", href: "mailto:pritamskumar4@gmail.com", handle: "pritamskumar4@gmail.com" },
 ];
 

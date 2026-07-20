@@ -24,9 +24,9 @@ export default function CircularBadge({
         <text
           className="font-mono"
           style={{
-            fill: "var(--muted)",
-            fontSize: "12.5px",
-            letterSpacing: "2.5px",
+            fill: "#fff",
+            fontSize: "16px",
+            letterSpacing: "6px",
             textTransform: "uppercase",
           }}
         >

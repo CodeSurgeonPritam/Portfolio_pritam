@@ -9,6 +9,7 @@ import {
   Sparkles,
   ShoppingBag,
   CircleDot,
+  Asterisk,
 } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { skillGroups } from "@/lib/data";
@@ -30,6 +31,22 @@ const BLURB: Record<string, string> = {
   "AI & Dev Tools": "Working faster with AI in the loop.",
   "E-Commerce": "Shopify-powered commerce, end to end.",
 };
+
+/** Comparison-style pill — top hairline border with a soft glow band. */
+function SkillPill({ label }: { label: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-t-2xl border-t-2 border-white/[0.14] bg-transparent px-4 py-3.5">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-10 [background:radial-gradient(70%_100%_at_50%_0%,rgba(255,255,255,0.07),transparent)]"
+      />
+      <div className="relative flex items-center gap-3">
+        <Asterisk size={22} className="text-white" />
+        <span className="text-sm text-muted">{label}</span>
+      </div>
+    </div>
+  );
+}
 
 export default function Skills() {
   const ref = useScrollReveal<HTMLElement>();
@@ -108,22 +125,29 @@ export default function Skills() {
           </div>
 
           <div key={active} className="pt-1 animate-[slideInLR_0.5s_ease]">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10 text-accent">
-              <Icon size={22} />
-            </span>
-            <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
+            <div className="flex items-center gap-4">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+                <Icon size={22} />
+              </span>
+              <div>
+                <p className="font-display text-2xl font-semibold tracking-tight text-fg">
+                  {group.title}
+                </p>
+                <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted">
+                  {group.skills.length} skills
+                </p>
+              </div>
+            </div>
+
+            <p className="mt-6 max-w-sm text-base leading-relaxed text-muted">
               {BLURB[group.title]}
             </p>
-            <ul className="mt-7 flex flex-wrap gap-2.5">
+
+            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {group.skills.map((s) => (
-                <li
-                  key={s}
-                  className="rounded-full border border-line bg-bg/50 px-4 py-2 text-sm text-fg/90"
-                >
-                  {s}
-                </li>
+                <SkillPill key={s} label={s} />
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </div>
