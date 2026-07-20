@@ -1,26 +1,591 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Dark-Cinematic palette — single committed dark look.
+   Swap --accent in one line to re-skin the whole site.
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-2: #1c1c1c;
+  --fg: #ededed;
+  --muted: #8a8a8a;
+  --line: rgba(255, 255, 255, 0.08);
+  --accent: #ff5a1f;
+  --accent-fg: #0a0a0a;
+  /* secondary tone for glows / silk tint */
+  --accent-2: #16b8a3;
+  /* live-swappable display font (FontSwitcher sets html[data-font]) */
+  --display-active: var(--font-sora);
+  /* serif used for italic accent words in headlines (Fade editorial look) */
+  --font-serif: var(--font-fraunces);
 }
 
+/* Accent choices — toggled by the AccentSwitcher via html[data-accent].
+   Orange is the :root default above; --accent-fg stays dark for all. */
+html[data-accent="lime"] {
+  --accent: #c5f04f;
+  --accent-2: #7bd389;
+}
+html[data-accent="emerald"] {
+  --accent: #34d399;
+  --accent-2: #22d3ee;
+}
+html[data-accent="cyan"] {
+  --accent: #22d3ee;
+  --accent-2: #6366f1;
+}
+html[data-accent="violet"] {
+  --accent: #a78bfa;
+  --accent-2: #f472b6;
+}
+html[data-accent="amber"] {
+  --accent: #fbbf24;
+  --accent-2: #fb923c;
+}
+html[data-accent="mono"] {
+  --accent: #e5e5e5;
+  --accent-2: #8a8a8a;
+}
+
+/* Display-font choices — toggled by the FontSwitcher via html[data-font] */
+html[data-font="sora"] {
+  --display-active: var(--font-sora);
+}
+html[data-font="bricolage"] {
+  --display-active: var(--font-bricolage);
+}
+html[data-font="space-grotesk"] {
+  --display-active: var(--font-space-grotesk);
+}
+html[data-font="outfit"] {
+  --display-active: var(--font-outfit);
+}
+html[data-font="dm-sans"] {
+  --display-active: var(--font-dm-sans);
+}
+html[data-font="jura"] {
+  --display-active: var(--font-jura);
+}
+html[data-font="fraunces"] {
+  --display-active: var(--font-fraunces);
+}
+html[data-font="instrument"] {
+  --display-active: var(--font-instrument);
+}
+
+/* Expose tokens to Tailwind v4 utilities (bg-bg, text-fg, text-accent, …) */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+
+  --font-display: var(--display-active);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: auto; /* Lenis owns smooth scroll */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+/* --- Lenis (inlined recommended styles) --- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* --- Dark scrollbar --- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-2);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2a2a2a;
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+
+/* Masked line reveal: wrap text in .line-mask, child slides up from 110%. */
+.line-mask {
+  overflow: hidden;
+  display: block;
+}
+
+/* Cinematic display type (live-swappable) */
+.font-display {
+  font-family: var(--display-active), sans-serif;
+}
+
+/* Serif italic accent word inside a sans headline (Fade editorial signature) */
+.serif-italic {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.01em;
+}
+
+/* Metallic gradient fill for the hero name (applied per character so it
+   survives the per-char reveal transforms) */
+.name-gradient {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #ededed 32%,
+    #b9b9b9 68%,
+    #8f8f8f 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Dark pill button with a cursor-following white glow on hover (Fade-style).
+   SpotlightButton sets --bx/--by from the pointer position. */
+.spotlight-btn-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    130px circle at var(--bx, 50%) var(--by, 50%),
+    rgba(255, 255, 255, 0.32),
+    rgba(255, 255, 255, 0.08) 40%,
+    transparent 68%
+  );
+}
+.spotlight-btn:hover .spotlight-btn-glow {
+  opacity: 1;
+}
+
+/* Soft radial accent glow used behind hero / section beats */
+.accent-glow {
+  background: radial-gradient(
+    circle at center,
+    color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+    transparent 62%
+  );
+}
+
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Fade + rise entrance — used when tab-switched content swaps in (e.g. Pricing) */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide in left → right — whole-card content swap on tab toggle (e.g. Pricing) */
+@keyframes slideInLR {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Infinite marquee (duplicated track → translate -50%) */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Slowly rotating circular text badge (hero portrait) */
+.circular-badge {
+  animation: spinSlow 26s linear infinite;
+}
+@keyframes spinSlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .circular-badge {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Custom cursor (fine-pointer devices only). The Cursor
+   component toggles html.cursor-none.
+   ============================================================ */
+html.cursor-none,
+html.cursor-none * {
+  cursor: none !important;
+}
+html.cursor-none input,
+html.cursor-none textarea {
+  cursor: text !important;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  pointer-events: none;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+.cursor-dot {
+  height: 7px;
+  width: 7px;
+  background: #ffffff;
+}
+.cursor-ring {
+  height: 40px;
+  width: 40px;
+  border: 1px solid #ffffff;
+  transition: width 0.28s ease, height 0.28s ease, opacity 0.28s ease,
+    background-color 0.28s ease;
+}
+.cursor-ring[data-hover="true"] {
+  height: 64px;
+  width: 64px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ============================================================
+   Silk — soft monochrome light sweep on black (Fade signature).
+   A pair of large, heavily-blurred light gradients slowly drifting.
+   ============================================================ */
+.silk {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  /* base wash so the black isn't flat */
+  background:
+    radial-gradient(
+      120% 90% at 85% 15%,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      100% 80% at 10% 90%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 0%,
+      transparent 55%
+    );
+}
+/* the flowing light streak — a soft curved sweep of light across black */
+.silk::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -20%;
+  height: 180%;
+  width: 140%;
+  background:
+    conic-gradient(
+      from 210deg at 60% 40%,
+      transparent 0deg,
+      rgba(255, 255, 255, 0.22) 40deg,
+      rgba(255, 255, 255, 0.05) 90deg,
+      transparent 150deg,
+      transparent 360deg
+    );
+  -webkit-mask-image: radial-gradient(
+    75% 75% at 55% 45%,
+    #000 0%,
+    transparent 72%
+  );
+  mask-image: radial-gradient(75% 75% at 55% 45%, #000 0%, transparent 72%);
+  filter: blur(60px);
+  will-change: transform;
+  animation: silkDrift 26s ease-in-out infinite;
+}
+/* a second, dimmer sweep for depth */
+.silk::after {
+  content: "";
+  position: absolute;
+  right: -25%;
+  bottom: -45%;
+  height: 150%;
+  width: 120%;
+  background: conic-gradient(
+    from 20deg at 40% 60%,
+    transparent 0deg,
+    color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.12)) 50deg,
+    transparent 140deg,
+    transparent 360deg
+  );
+  -webkit-mask-image: radial-gradient(
+    70% 70% at 45% 55%,
+    #000 0%,
+    transparent 70%
+  );
+  mask-image: radial-gradient(70% 70% at 45% 55%, #000 0%, transparent 70%);
+  filter: blur(70px);
+  opacity: 0.7;
+  will-change: transform;
+  animation: silkDrift 32s ease-in-out infinite reverse;
+}
+@keyframes silkDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, 3%, 0) rotate(12deg) scale(1.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .silk::before,
+  .silk::after {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Aurora — slow drifting colour blobs behind dark sections
+   ============================================================ */
+.aurora {
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 120%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(90px);
+  opacity: 0.55;
+}
+.aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 9999px;
+  mix-blend-mode: screen;
+}
+.aurora span:nth-child(1) {
+  top: 4%;
+  left: 8%;
+  height: 42vh;
+  width: 42vh;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  animation: drift1 16s ease-in-out infinite;
+}
+.aurora span:nth-child(2) {
+  top: 22%;
+  right: 6%;
+  height: 38vh;
+  width: 38vh;
+  background: radial-gradient(circle, var(--accent-2) 0%, transparent 70%);
+  animation: drift2 20s ease-in-out infinite;
+}
+.aurora span:nth-child(3) {
+  bottom: 2%;
+  left: 38%;
+  height: 34vh;
+  width: 34vh;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 72%);
+  opacity: 0.7;
+  animation: drift3 24s ease-in-out infinite;
+}
+@keyframes drift1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(12%, 8%) scale(1.18);
+  }
+}
+@keyframes drift2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.1);
+  }
+  50% {
+    transform: translate(-14%, 10%) scale(0.9);
+  }
+}
+@keyframes drift3 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(8%, -12%) scale(1.22);
+  }
+}
+
+/* Split line masking (used by SplitText mask:"lines") */
+.split-line {
+  overflow: hidden;
+  display: block;
+}
+
+/* Hide scrollbar (native horizontal galleries on mobile) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================================
+   Hero embellishments
+   ============================================================ */
+
+/* Frosted glass cards */
+.glass {
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* Faint techy dot grid, faded toward the edges */
+.dot-grid {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.07) 1px,
+    transparent 1px
+  );
+  background-size: 30px 30px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 45%,
+    #000 0%,
+    transparent 85%
+  );
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 45%,
+    #000 0%,
+    transparent 85%
+  );
+}
+
+/* Cursor-follow spotlight */
+.spotlight {
+  background: radial-gradient(
+    620px circle at var(--mx, 30%) var(--my, 25%),
+    color-mix(in srgb, var(--accent) 15%, transparent) 0%,
+    transparent 55%
+  );
+}
+
+/* Accent-outlined display text (second name line) */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 2.5px var(--accent);
+  text-stroke: 2.5px var(--accent);
+}
+
+/* Idle float for floating cards (outer wrapper only, so it never
+   conflicts with the GSAP mouse-parallax on the inner element) */
+@keyframes floatA {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+@keyframes floatB {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-26px);
+  }
+}
+@keyframes floatC {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* ============================================================
+   Reduced motion — CSS safety net so nothing stays hidden even
+   if a script fails. GSAP also gates every tween via matchMedia.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  [data-animate],
+  [data-reveal] > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
