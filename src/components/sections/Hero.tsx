@@ -144,14 +144,14 @@ export default function Hero() {
     >
       {/* backdrops — silky hero image (drifts with scroll + cursor) */}
       <div ref={silkScrub} className="absolute inset-0">
-        <div ref={silkMouse} className="absolute -inset-[6%]">
+        <div ref={silkMouse} className="absolute -inset-[8%]">
           <Image
             src="/hero-bg.jpg"
             alt=""
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[18%_88%] blur-[4px]"
+            className="object-contain mt-10 object-left-[58%] blur-[4px]"
           />
         </div>
       </div>
