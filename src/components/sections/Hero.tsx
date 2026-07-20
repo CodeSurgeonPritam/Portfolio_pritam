@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ArrowUpRight, ChevronDown, SquareStack, Mail } from "lucide-react";
-import { profile } from "@/lib/data";
+import { profile, socials } from "@/lib/data";
 import SpotlightButton from "@/components/ui/SpotlightButton";
 import CircularBadge from "@/components/ui/CircularBadge";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
@@ -226,7 +226,7 @@ export default function Hero() {
             className="mt-10 flex items-center gap-5 text-muted"
           >
             <a
-              href="https://github.com/"
+              href={socials.find((s) => s.label === "GitHub")?.href}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
@@ -236,7 +236,7 @@ export default function Hero() {
             </a>
             <span className="h-4 w-px bg-line" />
             <a
-              href="https://www.linkedin.com/"
+              href={socials.find((s) => s.label === "LinkedIn")?.href}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
@@ -261,18 +261,18 @@ export default function Hero() {
             {/* rotating circular badge */}
             <CircularBadge
               text="PRITAM KUMAR • FULL STACK DEVELOPER • "
-              className="absolute -right-6 -top-10 z-10 h-28 w-28 md:-right-10 md:h-32 md:w-32"
+              className="absolute -right-10 -top-8 z-1 h-32 w-32 md:-right-20 md:h-36 md:w-36"
             />
 
             {/* portrait card */}
-            <div className="relative aspect-square w-full overflow-hidden rounded-[2rem] bg-[#ece9e3] ring-1 ring-white/10 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.8)]">
+            <div className="relative aspect-square w-full rotate-8 overflow-hidden rounded-[2rem] bg-[#ece9e3] ring-1 ring-white/10 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.8)] z-10">
               {profile.photo ? (
                 <Image
                   src={profile.photo}
                   alt={profile.name}
                   fill
-                  sizes="(max-width: 1024px) 90vw, 34vw"
-                  className="object-cover grayscale"
+                  sizes="(max-width: 1024px) 85vw, 30vw"
+                  className="object-cover scale-110 grayscale transition duration-300 hover:grayscale-0"
                   priority
                 />
               ) : (
