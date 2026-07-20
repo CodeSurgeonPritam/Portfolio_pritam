@@ -1,12 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { GraduationCap, ArrowUpRight, CircleDot } from "lucide-react";
+import { ArrowUpRight, CircleDot, MapPin } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import Counter from "@/components/ui/Counter";
-import { profile, stats, education } from "@/lib/data";
-
-const proof = ["1,000+ users served", "2 products in production"];
+import { profile, stats } from "@/lib/data";
 
 export default function About() {
   const ref = useScrollReveal<HTMLElement>();
@@ -45,103 +42,44 @@ export default function About() {
         </p>
       </div>
 
-      <div className="mt-16 grid gap-14 md:grid-cols-[0.85fr_1.15fr] md:gap-20">
-        {/* left — grayscale portrait + proof (Fade editorial) */}
-        <div data-reveal data-parallax="-6">
-          <div className="glass relative aspect-[4/5] w-full overflow-hidden rounded-3xl">
-            {profile.photo ? (
-              <Image
-                src={profile.photo}
-                alt={profile.name}
-                fill
-                sizes="(max-width: 768px) 100vw, 40vw"
-                className="object-cover grayscale transition-all duration-700 hover:grayscale-0"
-              />
-            ) : (
-              <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-surface-2 to-bg">
-                <span className="name-gradient font-display text-7xl font-bold tracking-tight">
-                  {profile.initials}
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-                  Drop a photo at public/profile.jpg
-                </span>
-              </div>
-            )}
-            <span className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/5" />
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.15em] text-muted">
-            {proof.map((p) => (
-              <span key={p} className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                {p}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* right — narrative + education */}
-        <div>
-          <p data-reveal className="text-lg leading-relaxed text-fg/80">
+      <div className="mt-20 grid gap-16 lg:grid-cols-12 lg:gap-8">
+        {/* left — narrative */}
+        <div data-reveal data-parallax="-6" className="lg:col-span-7">
+          <p className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.2em] text-muted">
+            {profile.role}
+            <span className="h-1 w-1 rounded-full bg-fg/25" />
+            <span className="flex items-center gap-1.5">
+              <MapPin size={12} className="text-accent" />
+              {profile.location}
+            </span>
+          </p>
+          <p className="mt-7 font-display text-2xl leading-[1.5] tracking-tight text-fg/85 sm:text-[1.75rem]">
             {profile.intro}
           </p>
-
           <a
-            data-reveal
             href={profile.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-flex items-center gap-2 rounded-full border border-line bg-surface/40 px-5 py-2.5 font-mono text-xs uppercase tracking-[0.15em] text-fg transition-colors hover:border-accent/50 hover:text-accent"
+            className="mt-9 inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 font-mono text-xs uppercase tracking-[0.15em] text-fg transition-colors hover:border-accent/50 hover:text-accent"
           >
             Read résumé
             <ArrowUpRight size={14} />
           </a>
+        </div>
 
-          <div
-            data-reveal
-            className="glass relative mt-10 flex items-start gap-4 overflow-hidden rounded-2xl p-6"
-          >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-16 [background:linear-gradient(to_bottom,rgba(255,255,255,0.05),transparent)]"
-            />
-            <span className="relative mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
-              <GraduationCap size={20} />
-            </span>
-            <div className="relative">
-              <p className="font-display text-lg font-semibold uppercase tracking-tight text-fg">
-                {education.degree}
-              </p>
-              <p className="mt-1 text-sm text-muted">{education.school}</p>
-              <p className="mt-1 font-mono text-xs uppercase tracking-[0.15em] text-accent">
-                {education.period} · {education.score}
-              </p>
-            </div>
-          </div>
-
-          {/* animated stat grid */}
-          <div
-            data-parallax="-8"
-            className="relative mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-line bg-line"
-          >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 [background:linear-gradient(to_bottom,rgba(255,255,255,0.05),transparent)]"
-            />
+        {/* right — the numbers, plain and typographic */}
+        <div data-reveal className="lg:col-span-5">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 border-t border-line pt-8">
             {stats.map((s) => (
-              <div
-                key={s.label}
-                data-reveal
-                className="flex flex-col justify-between gap-6 bg-surface p-6 md:p-7"
-              >
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
-                  {s.label}
-                </span>
+              <div key={s.label} className="border-l border-line pl-5">
                 <Counter
                   value={s.value}
                   suffix={s.suffix}
-                  className="font-display text-4xl font-bold leading-none text-fg md:text-5xl"
+                  className="font-display text-4xl font-semibold tracking-tight text-fg md:text-5xl"
                 />
+                <p className="mt-2.5 font-mono text-[11px] uppercase leading-snug tracking-[0.15em] text-muted">
+                  {s.label}
+                </p>
               </div>
             ))}
           </div>
