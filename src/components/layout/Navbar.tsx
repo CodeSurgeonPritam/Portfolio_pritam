@@ -37,7 +37,7 @@ export default function Navbar() {
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-10">
+        <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between pl-[max(1.5rem,env(safe-area-inset-left))] pr-[max(1.5rem,env(safe-area-inset-right))] md:pl-10 md:pr-10">
           <a
             href="#top"
             onClick={(e) => go(e, "#top")}

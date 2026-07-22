@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Sora,
   Bricolage_Grotesque,
@@ -84,6 +84,13 @@ const fontVars = [
   geistMono.variable,
 ].join(" ");
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#050505",
+};
+
 export const metadata: Metadata = {
   title: `${profile.name} — ${profile.role}`,
   description: profile.tagline,
@@ -117,6 +124,9 @@ export default function RootLayout({
               "try{var f=localStorage.getItem('display-font');if(f)document.documentElement.dataset.font=f;var a=localStorage.getItem('accent');if(a)document.documentElement.dataset.accent=a;}catch(e){}",
           }}
         />
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         <Preloader />
         <Cursor />
         <SmoothScroll>

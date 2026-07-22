@@ -43,7 +43,7 @@ export default function Faq() {
         <div>
           <h2
             data-reveal
-            className="font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl"
+            className="font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl md:text-6xl"
           >
             Your Questions <em className="serif-italic">Answered</em>
           </h2>

@@ -74,7 +74,7 @@ export default function About() {
       <div className="relative text-center">
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
+          className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] max-w-[80vw] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
         />
         <span
           data-reveal
@@ -98,9 +98,9 @@ export default function About() {
         </p>
       </div>
 
-      <div className="mt-20 grid gap-16 lg:grid-cols-12 lg:gap-8">
+      <div className="mt-20 grid gap-16 md:grid-cols-12 md:gap-8">
         {/* left — narrative */}
-        <div data-reveal data-parallax="-6" className="lg:col-span-7">
+        <div data-reveal data-parallax="-6" className="md:col-span-6 lg:col-span-7">
           <p className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.2em] text-muted">
             {profile.role}
             <span className="h-1 w-1 rounded-full bg-fg/25" />
@@ -137,7 +137,7 @@ export default function About() {
         </div>
 
         {/* right — the numbers, plain and typographic */}
-        <div data-reveal className="lg:col-span-5">
+        <div data-reveal className="md:col-span-6 lg:col-span-5">
           <div className="grid grid-cols-2 gap-x-8 gap-y-10 border-t border-line pt-8">
             {stats.map((s) => (
               <div key={s.label} className="border-l border-line pl-5">
@@ -181,7 +181,7 @@ export default function About() {
                 {/* unique hover preview */}
                 <div
                   aria-hidden
-                  className={`pointer-events-none absolute left-1/2 top-full z-20 mt-4 w-56 -translate-x-1/2 ${tilt} -translate-y-2 scale-75 opacity-0 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100`}
+                  className={`pointer-events-none absolute left-1/2 top-full z-20 mt-4 w-56 -translate-x-1/2 ${tilt} -translate-y-2 scale-75 opacity-0 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:scale-100 [@media(hover:hover)]:group-hover:opacity-100`}
                 >
                   <div className="glass relative overflow-hidden rounded-2xl p-5 text-center shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7)]">
                     <span

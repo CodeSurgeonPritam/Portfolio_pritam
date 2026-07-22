@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Braces,
   LayoutTemplate,
@@ -51,8 +51,19 @@ function SkillPill({ label }: { label: string }) {
 export default function Skills() {
   const ref = useScrollReveal<HTMLElement>();
   const [active, setActive] = useState(0);
+  const paused = useRef(false);
+  const n = skillGroups.length;
   const group = skillGroups[active];
   const Icon = ICONS[group.title] ?? Braces;
+
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    const id = window.setInterval(() => {
+      if (!paused.current) setActive((a) => (a + 1) % n);
+    }, 3000);
+    return () => window.clearInterval(id);
+  }, [n]);
 
   return (
     <section
@@ -65,7 +76,7 @@ export default function Skills() {
         <div className="relative text-center">
           <div
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
+            className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] max-w-[80vw] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
           />
           <span
             data-reveal
@@ -92,7 +103,9 @@ export default function Skills() {
         {/* index list (left) + active category panel (right) */}
         <div
           data-reveal
-          className="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16"
+          onMouseEnter={() => (paused.current = true)}
+          onMouseLeave={() => (paused.current = false)}
+          className="mt-16 grid gap-10 md:grid-cols-[0.95fr_1.05fr] md:gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16"
         >
           <div className="border-t border-line">
             {skillGroups.map((g, i) => {

@@ -65,12 +65,22 @@ export default function Hero() {
             "-=0.7"
           );
 
+        let played = false;
+        const playOnce = () => {
+          if (played) return;
+          played = true;
+          intro.play();
+        };
+
         const ready = (window as unknown as { __appReady?: boolean }).__appReady;
-        if (ready) intro.play();
-        else {
-          const onReady = () => intro.play();
+        let onReady: (() => void) | null = null;
+        let fallback: gsap.core.Tween | null = null;
+        if (ready) {
+          playOnce();
+        } else {
+          onReady = playOnce;
           window.addEventListener("app:ready", onReady, { once: true });
-          gsap.delayedCall(3, () => intro.play());
+          fallback = gsap.delayedCall(3, playOnce);
         }
 
         // scroll parallax
@@ -93,6 +103,7 @@ export default function Hero() {
         });
 
         // subtle mouse parallax on the silk + floating photo card
+        let onMove: ((e: MouseEvent) => void) | null = null;
         if (window.matchMedia("(pointer: fine)").matches) {
           const sx = gsap.quickTo(silkMouse.current, "xPercent", {
             duration: 1.1,
@@ -109,7 +120,7 @@ export default function Hero() {
             d: parseFloat(c.dataset.depth || "1"),
           }));
 
-          const onMove = (e: MouseEvent) => {
+          onMove = (e: MouseEvent) => {
             const px = e.clientX / window.innerWidth - 0.5;
             const py = e.clientY / window.innerHeight - 0.5;
             sx(px * 6);
@@ -120,8 +131,13 @@ export default function Hero() {
             });
           };
           window.addEventListener("mousemove", onMove);
-          return () => window.removeEventListener("mousemove", onMove);
         }
+
+        return () => {
+          if (onReady) window.removeEventListener("app:ready", onReady);
+          fallback?.kill();
+          if (onMove) window.removeEventListener("mousemove", onMove);
+        };
       });
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -160,7 +176,7 @@ export default function Hero() {
       <div className="grain pointer-events-none absolute inset-0" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-bg/20 via-transparent to-bg" />
 
-      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-6 pt-28 pb-14 md:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10">
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-6 pt-28 pb-14 md:grid-cols-[1.1fr_0.9fr] md:gap-10 md:px-10 lg:grid-cols-[1.15fr_0.85fr]">
         {/* left column */}
         <div ref={left} className="will-change-transform">
           <p
@@ -261,7 +277,7 @@ export default function Hero() {
             {/* rotating circular badge */}
             <CircularBadge
               text="PRITAM KUMAR • FULL STACK DEVELOPER • "
-              className="absolute -right-10 -top-8 z-1 h-32 w-32 md:-right-20 md:h-36 md:w-36"
+              className="absolute -right-6 -top-6 z-1 h-24 w-24 sm:-right-10 sm:-top-8 sm:h-32 sm:w-32 md:-right-20 md:h-36 md:w-36"
             />
 
             {/* portrait card */}

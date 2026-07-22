@@ -1,8 +1,7 @@
 "use client";
 
-import { Mail, Phone, ArrowUpRight } from "lucide-react";
+import { Mail, Phone, ArrowUpRight, CircleDot } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import SectionHeading from "@/components/ui/SectionHeading";
 import { profile, socials } from "@/lib/data";
 
 export default function Contact() {
@@ -31,25 +30,38 @@ export default function Contact() {
     >
       <div
         aria-hidden
-        className="accent-glow pointer-events-none absolute bottom-0 left-1/2 h-[50vh] w-[70vh] -translate-x-1/2 opacity-50"
+        className="accent-glow pointer-events-none absolute bottom-0 left-1/2 h-[50vh] w-[70vw] max-w-[560px] -translate-x-1/2 opacity-50"
       />
 
       <div className="relative">
-        <SectionHeading
-          overline="Contact"
-          lead="Let's build something"
-          accent="together"
-          align="center"
-          className="mx-auto max-w-4xl"
-        />
-
-        <p
-          data-reveal
-          className="mx-auto mt-6 max-w-xl text-center text-base leading-relaxed text-muted"
-        >
-          I&apos;m currently open to full-stack opportunities and freelance
-          projects. Drop a line and I&apos;ll get back to you.
-        </p>
+        {/* centered header with arc glow, matching the rest of the site */}
+        <div className="relative text-center">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] max-w-[80vw] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
+          />
+          <span
+            data-reveal
+            className="relative inline-flex items-center gap-2 rounded-full border border-line bg-surface/50 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.2em] text-muted"
+          >
+            <CircleDot size={13} className="text-accent" />
+            Contact
+          </span>
+          <h2
+            data-reveal
+            className="relative mt-6 font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl md:text-6xl"
+          >
+            Let&apos;s build something{" "}
+            <em className="serif-italic">together</em>
+          </h2>
+          <p
+            data-reveal
+            className="relative mx-auto mt-5 max-w-md text-base leading-relaxed text-muted"
+          >
+            I&apos;m currently open to full-stack opportunities and freelance
+            projects. Drop a line and I&apos;ll get back to you.
+          </p>
+        </div>
 
         <div data-reveal className="mt-10 flex justify-center">
           <a
@@ -70,12 +82,16 @@ export default function Contact() {
               key={label}
               data-reveal
               href={href}
-              className="group flex items-center gap-4 rounded-2xl border border-line bg-surface/50 p-5 transition-colors hover:border-accent/40"
+              className="group glass relative flex items-center gap-4 overflow-hidden rounded-2xl p-5 transition-colors hover:border-accent/40"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-16 [background:linear-gradient(to_bottom,rgba(255,255,255,0.05),transparent)]"
+              />
+              <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
                 <Icon size={18} />
               </span>
-              <span className="min-w-0">
+              <span className="relative min-w-0">
                 <span className="block font-mono text-xs uppercase tracking-[0.2em] text-muted">
                   {label}
                 </span>
