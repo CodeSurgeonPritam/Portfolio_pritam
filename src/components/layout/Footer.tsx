@@ -1,4 +1,7 @@
+"use client";
+
 import { Mail, ArrowUpRight } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { profile, socials, navLinks } from "@/lib/data";
 
@@ -9,20 +12,33 @@ const iconFor = (label: string) => {
 };
 
 export default function Footer() {
+  const ref = useScrollReveal<HTMLElement>();
+
   return (
-    <footer className="relative overflow-hidden border-t border-line bg-bg pt-24">
+    <footer
+      ref={ref}
+      className="relative overflow-hidden border-t border-line bg-bg pt-24"
+    >
       {/* Giant faded name */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 select-none text-center font-display font-bold uppercase leading-none tracking-tighter text-fg/[0.04]"
         style={{ fontSize: "clamp(4rem, 20vw, 18rem)" }}
       >
-        {profile.lastName}
+        {profile.firstName}
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 pb-10 md:px-10">
-        <div className="grid gap-10 rounded-3xl border border-line bg-surface/60 p-8 backdrop-blur-sm md:grid-cols-[1.5fr_1fr_1fr] md:p-12">
-          <div>
+        <div
+          data-reveal
+          className="glass relative grid gap-10 overflow-hidden rounded-3xl p-8 md:grid-cols-[1.5fr_1fr_1fr] md:p-12"
+        >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-32 [background:linear-gradient(to_bottom,rgba(255,255,255,0.05),transparent)]"
+          />
+
+          <div className="relative">
             <p className="font-display text-2xl font-semibold uppercase tracking-tight text-fg">
               Let&apos;s build something
               <span className="text-accent">.</span>
@@ -40,7 +56,7 @@ export default function Footer() {
             </a>
           </div>
 
-          <div>
+          <div className="relative">
             <p className="mb-4 font-mono text-xs uppercase tracking-[0.25em] text-muted">
               Navigate
             </p>
@@ -58,7 +74,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
+          <div className="relative">
             <p className="mb-4 font-mono text-xs uppercase tracking-[0.25em] text-muted">
               Elsewhere
             </p>
@@ -83,10 +99,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-between gap-3 text-xs text-muted sm:flex-row">
-          <p>
-            © {profile.name}. Built with Next.js, GSAP &amp; Lenis.
-          </p>
+        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row">
+          <p>© {profile.name}.</p>
           <p className="font-mono uppercase tracking-[0.2em]">
             Designed &amp; developed with care
           </p>

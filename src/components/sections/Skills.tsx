@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Braces,
   LayoutTemplate,
+  Boxes,
+  Server,
+  ShieldCheck,
   Database,
-  Cloud,
-  Sparkles,
   ShoppingBag,
+  Smartphone,
+  Cloud,
+  Wrench,
+  Radio,
+  Sparkles,
+  GitBranch,
   CircleDot,
   Asterisk,
 } from "lucide-react";
@@ -15,21 +22,33 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { skillGroups } from "@/lib/data";
 
 const ICONS: Record<string, typeof Braces> = {
-  Languages: Braces,
-  Frontend: LayoutTemplate,
-  "Backend & Auth": Database,
-  "Cloud & Tools": Cloud,
-  "AI & Dev Tools": Sparkles,
-  "E-Commerce": ShoppingBag,
+  "Frontend Engineering": LayoutTemplate,
+  "State & Data Management": Boxes,
+  "Backend Engineering": Server,
+  "Authentication & Security": ShieldCheck,
+  Database: Database,
+  "Commerce Engineering": ShoppingBag,
+  "Mobile Development": Smartphone,
+  "Cloud & DevOps": Cloud,
+  "Developer Experience": Wrench,
+  "Real-time Systems": Radio,
+  "AI Engineering": Sparkles,
+  "Engineering Practices": GitBranch,
 };
 
 const BLURB: Record<string, string> = {
-  Languages: "The languages I write, day in and day out.",
-  Frontend: "Building fast, accessible, production-grade interfaces.",
-  "Backend & Auth": "APIs, data and secure access, done right.",
-  "Cloud & Tools": "Where I ship, host and collaborate.",
-  "AI & Dev Tools": "Working faster with AI in the loop.",
-  "E-Commerce": "Shopify-powered commerce, end to end.",
+  "Frontend Engineering": "Building fast, accessible, production-grade interfaces.",
+  "State & Data Management": "Keeping client state, forms and data fetching predictable.",
+  "Backend Engineering": "APIs and services built to hold up under real load.",
+  "Authentication & Security": "Locking down access without getting in the user's way.",
+  Database: "Modeling and querying data that scales cleanly.",
+  "Commerce Engineering": "Shopify-powered commerce, subscriptions and billing, end to end.",
+  "Mobile Development": "Taking the same product logic to iOS and Android.",
+  "Cloud & DevOps": "Where I ship, host and collaborate.",
+  "Developer Experience": "The daily toolkit that keeps quality high and iteration fast.",
+  "Real-time Systems": "Live updates, queues and background work, done right.",
+  "AI Engineering": "Working faster with AI in the loop.",
+  "Engineering Practices": "The habits and architecture choices behind every project.",
 };
 
 /** Comparison-style pill — top hairline border with a soft glow band. */
@@ -51,8 +70,19 @@ function SkillPill({ label }: { label: string }) {
 export default function Skills() {
   const ref = useScrollReveal<HTMLElement>();
   const [active, setActive] = useState(0);
+  const paused = useRef(false);
+  const n = skillGroups.length;
   const group = skillGroups[active];
   const Icon = ICONS[group.title] ?? Braces;
+
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    const id = window.setInterval(() => {
+      if (!paused.current) setActive((a) => (a + 1) % n);
+    }, 3000);
+    return () => window.clearInterval(id);
+  }, [n]);
 
   return (
     <section
@@ -65,14 +95,14 @@ export default function Skills() {
         <div className="relative text-center">
           <div
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
+            className="pointer-events-none absolute left-1/2 -top-32 h-120 w-120 max-w-[80vw] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
           />
           <span
             data-reveal
             className="relative inline-flex items-center gap-2 rounded-full border border-line bg-surface/50 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.2em] text-muted"
           >
-            <CircleDot size={13} className="text-accent" />
-            Toolkit
+           <CircleDot size={13} className="text-accent" />
+          <span className="shimmer-text">Skills</span>
           </span>
           <h2
             data-reveal
@@ -87,12 +117,14 @@ export default function Skills() {
             The technologies I reach for to design, build and ship production
             web applications end-to-end.
           </p>
-        </div>
+        </div>p
 
         {/* index list (left) + active category panel (right) */}
         <div
           data-reveal
-          className="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16"
+          onMouseEnter={() => (paused.current = true)}
+          onMouseLeave={() => (paused.current = false)}
+          className="mt-16 grid gap-10 md:grid-cols-[0.95fr_1.05fr] md:gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16"
         >
           <div className="border-t border-line">
             {skillGroups.map((g, i) => {
@@ -134,18 +166,27 @@ export default function Skills() {
                   {group.title}
                 </p>
                 <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted">
-                  {group.skills.length} skills
+                  {group.subGroups.reduce((n, sg) => n + sg.skills.length, 0)} skills
                 </p>
               </div>
             </div>
 
-            <p className="mt-6 max-w-sm text-base leading-relaxed text-muted">
+            <p className="mt-6 max-w-md text-base leading-relaxed text-muted">
               {BLURB[group.title]}
             </p>
 
-            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {group.skills.map((s) => (
-                <SkillPill key={s} label={s} />
+            <div className="mt-8 space-y-7">
+              {group.subGroups.map((sg) => (
+                <div key={sg.label}>
+                  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-accent/70">
+                    {sg.label}
+                  </p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {sg.skills.map((s) => (
+                      <SkillPill key={s} label={s} />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>

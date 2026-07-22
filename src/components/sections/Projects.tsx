@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ArrowUpRight, Dot, ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MagneticButton from "@/components/ui/MagneticButton";
+import ProjectModal from "@/components/ui/ProjectModal";
 import { projects } from "@/lib/data";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -17,6 +18,7 @@ export default function Projects() {
   const viewport = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState<number | null>(null);
 
   useGSAP(
     () => {
@@ -106,7 +108,7 @@ export default function Projects() {
       {/* pinned horizontal gallery (desktop) / native scroll (mobile) */}
       <div
         ref={pin}
-        className="relative mt-10 md:mt-16 md:flex md:h-screen md:flex-col md:justify-center"
+        className="relative mt-10 md:mt-16 md:flex md:h-dvh md:flex-col md:justify-center"
       >
         <div
           ref={viewport}
@@ -117,15 +119,22 @@ export default function Projects() {
             className="flex w-max snap-x snap-mandatory gap-6 px-6 pb-4 md:snap-none md:px-10"
           >
             {projects.map((p, i) => {
-              const Wrap = p.href ? "a" : "div";
               return (
-                <Wrap
+                <div
                   key={p.name}
                   data-cursor="hover"
-                  {...(p.href
-                    ? { href: p.href, target: "_blank", rel: "noopener noreferrer" }
-                    : {})}
-                  className="panel glass group relative flex w-[85vw] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl p-8 transition-colors hover:border-accent/40 sm:w-[70vw] md:h-[64vh] md:w-[44vw] md:p-10 lg:w-[38vw]"
+                  data-cursor-label="View Details"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View details — ${p.name}`}
+                  onClick={() => setActive(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActive(i);
+                    }
+                  }}
+                  className="panel glass group relative flex w-[85vw] shrink-0 cursor-pointer snap-center flex-col justify-between overflow-hidden rounded-3xl p-8 transition-colors hover:border-accent/40 sm:w-[70vw] md:h-[64dvh] md:w-[44vw] md:p-10 lg:w-[38vw]"
                 >
                   {/* giant faded index */}
                   <span
@@ -166,12 +175,12 @@ export default function Projects() {
                       <ArrowUpRight size={18} />
                     </span>
                   </div>
-                </Wrap>
+                </div>
               );
             })}
 
             {/* closing CTA card */}
-            <div className="panel relative flex w-[85vw] shrink-0 snap-center flex-col items-start justify-center gap-6 rounded-3xl border border-dashed border-line px-8 sm:w-[60vw] md:h-[64vh] md:w-[32vw] md:px-10">
+            <div className="panel relative flex w-[85vw] shrink-0 snap-center flex-col items-start justify-center gap-6 rounded-3xl border border-dashed border-line px-8 sm:w-[60vw] md:h-[64dvh] md:w-[32vw] md:px-10">
               <p className="font-display text-3xl font-semibold uppercase leading-tight tracking-tight text-fg md:text-5xl">
                 Got a project
                 <br />
@@ -195,6 +204,10 @@ export default function Projects() {
           />
         </div>
       </div>
+
+      {active !== null && (
+        <ProjectModal project={projects[active]} onClose={() => setActive(null)} />
+      )}
     </section>
   );
 }

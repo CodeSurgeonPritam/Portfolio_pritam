@@ -13,18 +13,18 @@ import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
-    <main className="relative">
+    <main id="main-content" className="relative">
       <Hero />
       <About />
+      <Skills />
+      <Experience />
       <Services />
       <Approach />
-      <Skills />
       <Projects />
-      <Experience />
       <Comparison />
       <Pricing />
-      <Faq />
       <Contact />
+      <Faq />
       <Footer />
     </main>
   );

@@ -28,66 +28,356 @@ export const stats: { value: number; suffix: string; label: string }[] = [
   { value: 2, suffix: "", label: "Production products" },
 ];
 
-export const skillGroups: { title: string; skills: string[] }[] = [
+export interface SkillSubGroup {
+  label: string;
+  skills: string[];
+}
+
+export interface SkillGroup {
+  title: string;
+  subGroups: SkillSubGroup[];
+}
+
+export const skillGroups: SkillGroup[] = [
   {
-    title: "Languages",
-    skills: ["JavaScript", "TypeScript", "Python"],
-  },
-  {
-    title: "Frontend",
-    skills: [
-      "React.js",
-      "Next.js",
-      "Redux Toolkit",
-      "Tailwind CSS",
-      "HTML5",
-      "CSS3",
-      "Responsive Design",
+    title: "Programming Languages",
+    subGroups: [
+      {
+        label: "Core",
+        skills: [
+          "TypeScript",
+          "JavaScript (ES6+)",
+          "Python",
+          "SQL",
+        ],
+      },
     ],
   },
+
   {
-    title: "Backend & Auth",
-    skills: [
-      "Node.js",
-      "Express.js",
-      "REST API",
-      "MongoDB",
-      "SQL",
-      "Google OAuth 2.0",
-      "JWT",
-      "RBAC",
-      "Sessions",
+    title: "Frontend Engineering",
+    subGroups: [
+      {
+        label: "Frameworks",
+        skills: [
+          "React.js",
+          "Next.js",
+          "React Router",
+        ],
+      },
+      {
+        label: "UI Development",
+        skills: [
+          "Tailwind CSS",
+          "Responsive Design",
+          "Accessibility (a11y)",
+          "Component Architecture",
+        ],
+      },
+      {
+        label: "Client State",
+        skills: [
+          "Redux Toolkit",
+          "Zustand",
+          "Context API",
+        ],
+      },
+      {
+        label: "Server State",
+        skills: [
+          "TanStack Query",
+          "Query Client",
+          "Caching",
+          "Query Invalidation",
+          "Data Fetching",
+        ],
+      },
+      {
+        label: "Forms & Validation",
+        skills: [
+          "React Hook Form",
+          "Zod",
+        ],
+      },
+      {
+        label: "Networking",
+        skills: [
+          "Axios",
+        ],
+      },
+      {
+        label: "Performance",
+        skills: [
+          "Code Splitting",
+          "Lazy Loading",
+          "Performance Optimization",
+        ],
+      },
     ],
   },
+
   {
-    title: "Cloud & Tools",
-    skills: [
-      "DigitalOcean",
-      "Vercel",
-      "Git",
-      "GitHub",
-      "Postman",
-      "Vite",
-      "Figma",
-      "Jest",
-      "CI/CD",
+    title: "Backend Engineering",
+    subGroups: [
+      {
+        label: "Runtime",
+        skills: [
+          "Node.js",
+          "Express.js",
+          "FastAPI",
+        ],
+      },
+      {
+        label: "API Development",
+        skills: [
+          "REST APIs",
+          "API Design",
+          "Swagger/OpenAPI",
+          "Webhook Integration",
+          "Third-party API Integration",
+        ],
+      },
+      {
+        label: "Authentication",
+        skills: [
+          "Google OAuth 2.0",
+          "JWT Authentication",
+          "Role-Based Access Control (RBAC)",
+          "Session Management",
+        ],
+      },
+      {
+        label: "Server Engineering",
+        skills: [
+          "Middleware",
+          "Request Validation",
+          "Error Handling",
+        ],
+      },
     ],
   },
+
   {
-    title: "AI & Dev Tools",
-    skills: [
-      "Prompt Engineering",
-      "GitHub Copilot",
-      "LLM API Integration",
-      "AI Workflow Automation",
+    title: "Database",
+    subGroups: [
+      {
+        label: "NoSQL",
+        skills: [
+          "MongoDB",
+          "Data Modeling",
+          "Aggregation Pipelines",
+        ],
+      },
+      {
+        label: "Relational",
+        skills: [
+          "SQL",
+          "Joins",
+          "Indexing",
+        ],
+      },
+      {
+        label: "Optimization",
+        skills: [
+          "Query Optimization",
+          "Schema Design",
+        ],
+      },
     ],
   },
+
   {
-    title: "E-Commerce",
-    skills: [
-      "Shopify API",
-      "Subscription Management",
-      "Order Management",
+    title: "E-commerce & SaaS",
+    subGroups: [
+      {
+        label: "Shopify",
+        skills: [
+          "Admin API",
+          "Customer API",
+          "Webhooks",
+        ],
+      },
+      {
+        label: "Business Workflows",
+        skills: [
+          "Subscription Management",
+          "Order Management",
+          "Customer Portal",
+          "Payment Workflows",
+        ],
+      },
+      {
+        label: "Integrations",
+        skills: [
+          "REST Integrations",
+          "Third-party APIs",
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "Mobile Development",
+    subGroups: [
+      {
+        label: "Cross-platform",
+        skills: [
+          "React Native",
+          "Expo",
+          "Cross-platform Development",
+          "Native Device APIs",
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "Cloud & DevOps",
+    subGroups: [
+      {
+        label: "Deployment",
+        skills: [
+          "Vercel",
+          "DigitalOcean",
+        ],
+      },
+      {
+        label: "CI/CD",
+        skills: [
+          "GitHub Actions",
+          "Deployment Pipelines",
+        ],
+      },
+      {
+        label: "Version Control",
+        skills: [
+          "Git",
+          "GitHub",
+        ],
+      },
+      {
+        label: "Package Management",
+        skills: [
+          "npm",
+          "pnpm",
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "Developer Tools",
+    subGroups: [
+      {
+        label: "Development",
+        skills: [
+          "Vite",
+          "Postman",
+          "Figma",
+        ],
+      },
+      {
+        label: "Testing",
+        skills: [
+          "Jest",
+          "Debugging",
+        ],
+      },
+      {
+        label: "Code Quality",
+        skills: [
+          "ESLint",
+          "Prettier",
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "Real-time Systems",
+    subGroups: [
+      {
+        label: "Messaging",
+        skills: [
+          "Socket.IO",
+          "Redis",
+          "BullMQ",
+        ],
+      },
+      {
+        label: "Processing",
+        skills: [
+          "Background Jobs",
+          "Queue Management",
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "AI Engineering",
+    subGroups: [
+      {
+        label: "LLMs",
+        skills: [
+          "OpenAI API",
+          "LLM Integration",
+        ],
+      },
+      {
+        label: "AI Development",
+        skills: [
+          "Prompt Engineering",
+          "AI Workflow Automation",
+        ],
+      },
+      {
+        label: "AI Productivity",
+        skills: [
+          "GitHub Copilot",
+          "Cursor AI",
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "Engineering Practices",
+    subGroups: [
+      {
+        label: "Architecture",
+        skills: [
+          "Clean Architecture",
+          "Feature-Based Architecture",
+          "Component-Driven Development",
+          "Reusable Component Design",
+          "Scalable Frontend Architecture",
+        ],
+      },
+      {
+        label: "Performance",
+        skills: [
+          "Performance Optimization",
+          "Code Splitting",
+          "Lazy Loading",
+        ],
+      },
+      {
+        label: "Quality",
+        skills: [
+          "Code Reviews",
+          "Technical Documentation",
+          "Debugging",
+        ],
+      },
+      {
+        label: "Collaboration",
+        skills: [
+          "Git Workflow",
+          "Agile Development",
+          "Sprint Planning",
+        ],
+      },
     ],
   },
 ];

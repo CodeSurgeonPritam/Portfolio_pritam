@@ -36,8 +36,17 @@ const LAYERS = [
 
 export default function Approach() {
   const [active, setActive] = useState(0);
+  const [compact, setCompact] = useState(false);
   const paused = useRef(false);
   const n = steps.length;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    setCompact(mq.matches);
+    const onChange = () => setCompact(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -47,6 +56,10 @@ export default function Approach() {
     }, 3600);
     return () => window.clearInterval(id);
   }, [n]);
+
+  const layers = compact
+    ? LAYERS.map((l) => ({ ...l, x: l.x * 0.45, y: l.y * 0.45 }))
+    : LAYERS;
 
   return (
     <section
@@ -72,13 +85,13 @@ export default function Approach() {
 
       {/* stacked, auto-cycling deck */}
       <div
-        className="relative mt-16 h-[500px] sm:h-[520px]"
+        className="relative mt-16 h-[500px] overflow-hidden sm:h-[520px] sm:overflow-visible"
         onMouseEnter={() => (paused.current = true)}
         onMouseLeave={() => (paused.current = false)}
       >
         {steps.map(({ Icon, label, title, body }, i) => {
           const order = (i - active + n) % n;
-          const L = LAYERS[order];
+          const L = layers[order];
           const isFront = order === 0;
           return (
             <button
@@ -113,9 +126,9 @@ export default function Approach() {
               {/* body */}
               <div className="flex flex-1 flex-col p-8 md:p-10">
                 <Icon size={26} className="text-fg" strokeWidth={1.75} />
-                <h3 className="mt-7 font-display text-2xl font-semibold tracking-tight text-fg md:text-3xl">
+                <p className="mt-7 font-display text-2xl font-semibold tracking-tight text-fg md:text-3xl">
                   {title}
-                </h3>
+                </p>
                 <p className="mt-3 max-w-md text-sm leading-relaxed text-muted md:text-base">
                   {body}
                 </p>

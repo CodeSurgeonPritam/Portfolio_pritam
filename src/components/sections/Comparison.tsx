@@ -70,8 +70,8 @@ export default function Comparison() {
             data-reveal
             className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/50 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.2em] text-muted"
           >
-            <CircleDot size={13} className="text-accent" />
-            Comparison
+           <CircleDot size={13} className="text-accent" />
+          <span className="shimmer-text">Comparison</span>
           </span>
           <h2
             data-reveal

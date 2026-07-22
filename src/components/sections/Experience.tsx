@@ -18,14 +18,14 @@ export default function Experience() {
         <div className="relative text-center">
           <div
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
+            className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] max-w-[80vw] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
           />
           <span
             data-reveal
             className="relative inline-flex items-center gap-2 rounded-full border border-line bg-surface/50 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.2em] text-muted"
           >
             <CircleDot size={13} className="text-accent" />
-            Career
+          <span className="shimmer-text">Experience</span>
           </span>
           <h2
             data-reveal

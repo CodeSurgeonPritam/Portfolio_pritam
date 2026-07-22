@@ -5,7 +5,7 @@
  * `src/app/globals.css` (which sets the CSS vars `--accent` / `--accent-2`).
  * Keep the hex values here in sync with those rules.
  *
- * `orange` is the `:root` default in globals.css (no data-accent rule needed).
+ * `mono` is the `:root` default in globals.css (no data-accent rule needed).
  */
 
 export type Accent = {
@@ -30,7 +30,7 @@ export const ACCENTS: Accent[] = [
 ];
 
 /** Default accent for first-time visitors (the :root value in globals.css). */
-export const DEFAULT_ACCENT = "orange";
+export const DEFAULT_ACCENT = "mono";
 
 /** Foreground colour used on top of any accent (dark — all accents are bright). */
 export const ACCENT_FG = "#0a0a0a";

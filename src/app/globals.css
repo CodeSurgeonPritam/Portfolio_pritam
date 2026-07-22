@@ -11,18 +11,22 @@
   --fg: #ededed;
   --muted: #8a8a8a;
   --line: rgba(255, 255, 255, 0.08);
-  --accent: #ff5a1f;
+  --accent: #e5e5e5;
   --accent-fg: #0a0a0a;
   /* secondary tone for glows / silk tint */
-  --accent-2: #16b8a3;
+  --accent-2: #8a8a8a;
   /* live-swappable display font (FontSwitcher sets html[data-font]) */
-  --display-active: var(--font-sora);
+  --display-active: var(--font-jura);
   /* serif used for italic accent words in headlines (Fade editorial look) */
   --font-serif: var(--font-fraunces);
 }
 
 /* Accent choices — toggled by the AccentSwitcher via html[data-accent].
-   Orange is the :root default above; --accent-fg stays dark for all. */
+   Mono is the :root default above; --accent-fg stays dark for all. */
+html[data-accent="orange"] {
+  --accent: #ff5a1f;
+  --accent-2: #16b8a3;
+}
 html[data-accent="lime"] {
   --accent: #c5f04f;
   --accent-2: #7bd389;
@@ -43,12 +47,9 @@ html[data-accent="amber"] {
   --accent: #fbbf24;
   --accent-2: #fb923c;
 }
-html[data-accent="mono"] {
-  --accent: #e5e5e5;
-  --accent-2: #8a8a8a;
-}
 
-/* Display-font choices — toggled by the FontSwitcher via html[data-font] */
+/* Display-font choices — toggled by the FontSwitcher via html[data-font].
+   Jura is the :root default above. */
 html[data-font="sora"] {
   --display-active: var(--font-sora);
 }
@@ -64,14 +65,43 @@ html[data-font="outfit"] {
 html[data-font="dm-sans"] {
   --display-active: var(--font-dm-sans);
 }
-html[data-font="jura"] {
-  --display-active: var(--font-jura);
-}
 html[data-font="fraunces"] {
   --display-active: var(--font-fraunces);
 }
 html[data-font="instrument"] {
   --display-active: var(--font-instrument);
+}
+
+/* ============================================================
+   Accessibility — keyboard-focus affordance and skip link.
+   The custom cursor hides the native pointer for fine-pointer
+   users, so keyboard focus is the only visible interaction
+   state left; it must be designed, not left to the UA default.
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 300;
+  background: var(--accent);
+  color: var(--accent-fg);
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
 }
 
 /* Expose tokens to Tailwind v4 utilities (bg-bg, text-fg, text-accent, …) */
@@ -257,6 +287,38 @@ html.lenis body {
   }
 }
 
+/* Project detail overlay entrance */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.modal-backdrop {
+  animation: fadeIn 0.25s ease;
+}
+.modal-panel {
+  animation: modalIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal-panel {
+    animation: none;
+  }
+}
+
 /* Slowly rotating circular text badge (hero portrait) */
 .circular-badge {
   animation: spinSlow 26s linear infinite;
@@ -269,6 +331,100 @@ html.lenis body {
 @media (prefers-reduced-motion: reduce) {
   .circular-badge {
     animation: none;
+  }
+}
+
+/* Shimmer sweep — a bright band travels right → left across the text via
+   an animated background-clip gradient, looping forever. */
+.shimmer-text {
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    var(--muted) 35%,
+    var(--fg) 50%,
+    var(--muted) 65%,
+    var(--muted) 100%
+  );
+  background-size: 600% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerSweep 14s linear infinite;
+}
+@keyframes shimmerSweep {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 600% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-text {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: var(--fg);
+  }
+}
+
+/* Radar ping — a static ring + dot with two staggered pulse waves expanding
+   outward and fading, offset by half the cycle so a wave departs every
+   0.9s. Used for the "available for work" status indicator. */
+.radar-ping {
+  position: relative;
+  display: inline-flex;
+  height: 10px;
+  width: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.radar-ping-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 9999px;
+  border: 1px solid var(--accent);
+  opacity: 0.5;
+}
+.radar-ping-dot {
+  position: relative;
+  z-index: 1;
+  height: 4px;
+  width: 4px;
+  border-radius: 9999px;
+  background: var(--accent);
+}
+.radar-ping-wave {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px solid var(--accent);
+  animation: radarPing 1.8s ease-out infinite;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+.radar-ping-wave-2 {
+  animation-delay: 0.9s;
+}
+@keyframes radarPing {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  55% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(4.4);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .radar-ping-wave {
+    animation: none;
+    opacity: 0;
   }
 }
 
@@ -313,6 +469,38 @@ html.cursor-none textarea {
   height: 64px;
   width: 64px;
   background: rgba(255, 255, 255, 0.12);
+}
+
+.cursor-label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 121;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+.cursor-label-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  border-radius: 9999px;
+  padding: 11px 18px 11px 20px;
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cursor-label[data-active="true"] .cursor-label-inner {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* ============================================================
@@ -404,6 +592,14 @@ html.cursor-none textarea {
   .silk::before,
   .silk::after {
     animation: none;
+  }
+}
+@media (max-width: 640px), (pointer: coarse) {
+  .silk::before {
+    filter: blur(32px);
+  }
+  .silk::after {
+    filter: blur(38px);
   }
 }
 
