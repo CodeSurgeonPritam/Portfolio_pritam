@@ -1,14 +1,23 @@
 "use client";
 
-import { useRef } from "react";
-import { ArrowUpRight, CircleDot, Mail, MapPin } from "lucide-react";
+import { Fragment, useRef } from "react";
+import type Lenis from "lenis";
+import {
+  ArrowUpRight,
+  CircleDot,
+  Cloud,
+  LayoutTemplate,
+  Mail,
+  MapPin,
+  Server,
+  Sparkles,
+} from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import Counter from "@/components/ui/Counter";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
-import { profile, stats, socials } from "@/lib/data";
+import { profile, socials } from "@/lib/data";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -21,26 +30,82 @@ const SOCIAL_ICONS: Record<
   Email: Mail,
 };
 
+// Same icons/copy as the matching groups in Skills.tsx, for consistency.
+const FOCUS_AREAS = [
+  {
+    title: "Frontend Engineering",
+    icon: LayoutTemplate,
+    blurb: "Building fast, accessible, production-grade interfaces.",
+  },
+  {
+    title: "Backend Engineering",
+    icon: Server,
+    blurb: "APIs and services built to hold up under real load.",
+  },
+  {
+    title: "AI Engineering",
+    icon: Sparkles,
+    blurb: "Working faster with AI in the loop.",
+  },
+  {
+    title: "Cloud & DevOps",
+    icon: Cloud,
+    blurb: "Where I ship, host and collaborate.",
+  },
+];
+
 const SOCIAL_BLURB: Record<string, string> = {
   GitHub: "Code, repos & contributions",
   LinkedIn: "Professional profile & network",
   Email: "Get in touch directly",
 };
 
+const introWords = profile.intro.split(" ");
+
 export default function About() {
   const ref = useScrollReveal<HTMLElement>();
   const fillWrapRef = useRef<HTMLDivElement>(null);
-  const fillTextRef = useRef<HTMLParagraphElement>(null);
+  const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const goToSkillGroup = (e: React.MouseEvent<HTMLAnchorElement>, title: string) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent("skills:select", { detail: title }));
+    const target = document.querySelector("#skills");
+    if (!target) return;
+    const lenis = (window as unknown as { __lenis?: Lenis }).__lenis;
+    if (lenis) lenis.scrollTo(target as HTMLElement, { offset: -72 });
+    else target.scrollIntoView({ behavior: "smooth" });
+  };
 
   useGSAP(
     () => {
-      const el = fillTextRef.current;
-      if (!el) return;
+      const words = wordRefs.current;
+      if (!words.length) return;
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Group words into rows by their rendered offsetTop — line wraps
+        // depend on container width/font size, so this is measured live
+        // rather than assumed, and re-measured on resize.
+        let rows: number[][] = [];
+        const computeRows = () => {
+          rows = [];
+          let lastTop: number | null = null;
+          words.forEach((el, i) => {
+            if (!el) return;
+            const top = el.offsetTop;
+            if (lastTop === null || Math.abs(top - lastTop) > 2) {
+              rows.push([i]);
+              lastTop = top;
+            } else {
+              rows[rows.length - 1].push(i);
+            }
+          });
+        };
+        computeRows();
+
         const state = { p: 0 };
-        gsap.to(state, {
+        const tween = gsap.to(state, {
           p: 100,
           ease: "none",
           scrollTrigger: {
@@ -50,13 +115,35 @@ export default function About() {
             scrub: true,
           },
           onUpdate: () => {
-            el.style.clipPath = `inset(0 ${100 - state.p}% 0 0)`;
+            const segment = 100 / rows.length;
+            rows.forEach((rowIndices, r) => {
+              const raw = (state.p - r * segment) / segment;
+              const local = gsap.utils.clamp(0, 1, raw) * 100;
+              rowIndices.forEach((i) => {
+                const el = words[i];
+                if (el) el.style.clipPath = `inset(0 ${100 - local}% 0 0)`;
+              });
+            });
           },
         });
+
+        const onResize = () => {
+          computeRows();
+          ScrollTrigger.refresh();
+        };
+        window.addEventListener("resize", onResize);
+
+        return () => {
+          window.removeEventListener("resize", onResize);
+          tween.scrollTrigger?.kill();
+          tween.kill();
+        };
       });
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        el.style.clipPath = "inset(0 0% 0 0)";
+        words.forEach((el) => {
+          if (el) el.style.clipPath = "inset(0 0% 0 0)";
+        });
       });
 
       return () => mm.revert();
@@ -87,7 +174,10 @@ export default function About() {
           data-reveal
           className="relative mt-6 font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl md:text-6xl"
         >
-          Full-stack, <em className="serif-italic">end to end</em>
+          <span className="block">Full-stack,</span>
+          <span className="block text-right">
+            <em className="serif-italic">end to end</em>
+          </span>
         </h2>
         <p
           data-reveal
@@ -98,9 +188,9 @@ export default function About() {
         </p>
       </div>
 
-      <div className="mt-20 grid gap-16  md:gap-8">
+      <div className="mt-20 grid grid-cols-1 gap-16">
         {/* left — narrative */}
-        <div data-reveal data-parallax="-6" className="md:col-span-6 lg:col-span-7 max-w-4xl">
+        <div data-reveal data-parallax="-6" className="max-w-4xl">
           <p className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.2em] text-muted">
             {profile.role}
             <span className="h-1 w-1 rounded-full bg-fg/25" />
@@ -110,19 +200,29 @@ export default function About() {
             </span>
           </p>
 
-          {/* intro — fills from dim to full color as you scroll */}
-          <div ref={fillWrapRef} className="relative mt-7">
-            <p className="font-display text-2xl leading-[1.5] tracking-tight text-fg/20 sm:text-[1.75rem]">
-              {profile.intro}
-            </p>
-            <p
-              ref={fillTextRef}
-              aria-hidden
-              style={{ clipPath: "inset(0 100% 0 0)" }}
-              className="pointer-events-none absolute inset-0 font-display text-2xl leading-[1.5] tracking-tight text-fg sm:text-[1.75rem]"
-            >
-              {profile.intro}
-            </p>
+          {/* intro — each word fills from dim to full color in turn as you scroll */}
+          <div
+            ref={fillWrapRef}
+            className="font-display text-2xl leading-[1.5] tracking-tight sm:text-[1.75rem]"
+          >
+            {introWords.map((word, i) => (
+              <Fragment key={i}>
+                <span className="relative inline-block text-fg/[0.08]">
+                  {word}
+                  <span
+                    ref={(el) => {
+                      wordRefs.current[i] = el;
+                    }}
+                    aria-hidden
+                    style={{ clipPath: "inset(0 100% 0 0)" }}
+                    className="pointer-events-none absolute inset-0 text-fg"
+                  >
+                    {word}
+                  </span>
+                </span>
+                {i < introWords.length - 1 ? " " : ""}
+              </Fragment>
+            ))}
           </div>
 
           <a
@@ -136,21 +236,39 @@ export default function About() {
           </a>
         </div>
 
-        {/* right — the numbers, plain and typographic */}
-        <div data-reveal className="md:col-span-6 lg:col-span-5 justify-end">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 border-t border-line pt-8">
-            {stats.map((s) => (
-              <div key={s.label} className="border-l border-line pl-5">
-                <Counter
-                  value={s.value}
-                  suffix={s.suffix}
-                  className="font-display text-4xl font-semibold tracking-tight text-fg md:text-5xl"
-                />
-                <p className="mt-2.5 font-mono text-[11px] uppercase leading-snug tracking-[0.15em] text-muted">
-                  {s.label}
-                </p>
-              </div>
-            ))}
+        {/* right — focus areas, as a numbered ledger */}
+        <div data-reveal>
+          <div className="border-t border-line">
+            {FOCUS_AREAS.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <a
+                  key={f.title}
+                  href="#skills"
+                  onClick={(e) => goToSkillGroup(e, f.title)}
+                  className="group flex items-start gap-4 border-b border-line py-5 transition-colors duration-300 hover:border-accent/30"
+                >
+                  <span className="mt-1 font-mono text-[10px] text-muted/50 transition-colors duration-300 group-hover:text-accent">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-fg/[0.04] text-accent transition-colors duration-300 group-hover:bg-accent/10">
+                    <Icon size={15} />
+                  </span>
+                  <span className="flex-1">
+                    <p className="font-display text-base font-semibold tracking-tight text-fg">
+                      {f.title}
+                    </p>
+                    <p className="mt-1 text-[12.5px] leading-snug text-muted">
+                      {f.blurb}
+                    </p>
+                  </span>
+                  <ArrowUpRight
+                    size={16}
+                    className="mt-1 shrink-0 -translate-y-0.5 translate-x-0.5 text-accent opacity-0 transition-all duration-300 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:translate-x-0 [@media(hover:hover)]:group-hover:opacity-100"
+                  />
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>

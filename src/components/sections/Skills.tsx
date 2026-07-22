@@ -84,6 +84,20 @@ export default function Skills() {
     return () => window.clearInterval(id);
   }, [n]);
 
+  // Lets other sections (e.g. About's focus areas) jump straight to a group.
+  useEffect(() => {
+    const onSelect = (e: Event) => {
+      const title = (e as CustomEvent<string>).detail;
+      const idx = skillGroups.findIndex((g) => g.title === title);
+      if (idx !== -1) {
+        paused.current = true;
+        setActive(idx);
+      }
+    };
+    window.addEventListener("skills:select", onSelect);
+    return () => window.removeEventListener("skills:select", onSelect);
+  }, []);
+
   return (
     <section
       id="skills"
@@ -117,7 +131,7 @@ export default function Skills() {
             The technologies I reach for to design, build and ship production
             web applications end-to-end.
           </p>
-        </div>p
+        </div>
 
         {/* index list (left) + active category panel (right) */}
         <div
