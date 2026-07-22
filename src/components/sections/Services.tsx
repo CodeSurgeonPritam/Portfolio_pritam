@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   Layers,
@@ -15,18 +16,27 @@ import {
   Lock,
   Palette,
   GitBranch,
+  Smartphone,
 } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-// image: "" → show a grayscale placeholder (drop a real screenshot to fill it).
-// Cards WITH an `image` key render wide (media + text); others are text-only.
-const services = [
+// The first bento slot auto-paginates between these — same card, rotating content.
+const heroVariants = [
   {
     Icon: Layers,
     title: "Full-Stack Web Apps",
     body: "End-to-end React & Next.js front-ends with Node/Express APIs, databases and clean, typed code — shipped to production.",
-    image: "",
   },
+  {
+    Icon: Smartphone,
+    title: "iOS & Android Apps",
+    body: "React Native & Expo apps like Nestmate, sharing the same product logic and design system as the web across iOS and Android.",
+  },
+] as const;
+
+// image: "" → show a grayscale placeholder (drop a real screenshot to fill it).
+// Cards WITH an `image` key render wide (media + text); others are text-only.
+const services = [
   {
     Icon: Blocks,
     title: "Reusable UI Systems",
@@ -71,6 +81,83 @@ function Tag({ Icon, label }: { Icon: typeof Code2; label: string }) {
   );
 }
 
+/** First bento slot — auto-paginates between web and mobile, paused on hover. */
+function HeroServiceCard() {
+  const [active, setActive] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const paused = useRef(false);
+  const n = heroVariants.length;
+  const intervalMs = 3500;
+
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setReduceMotion(reduce);
+    if (reduce) return;
+    const id = window.setInterval(() => {
+      if (!paused.current) setActive((a) => (a + 1) % n);
+    }, intervalMs);
+    return () => window.clearInterval(id);
+  }, [n]);
+
+  const variant = heroVariants[active];
+  const Icon = variant.Icon;
+
+  return (
+    <div
+      data-reveal
+      onMouseEnter={() => (paused.current = true)}
+      onMouseLeave={() => (paused.current = false)}
+      className="glass group relative flex overflow-hidden rounded-3xl p-6 transition-colors duration-300 hover:border-white/20 md:p-7"
+    >
+      <div className="flex w-full flex-col gap-6 sm:flex-row sm:items-center">
+        <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/10 sm:w-[46%]">
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#ededed] to-[#b4b4b4]">
+            <Icon
+              key={active}
+              size={52}
+              strokeWidth={1.5}
+              className="text-[#15130f]/25 animate-[fadeIn_0.5s_ease]"
+            />
+          </div>
+
+          {/* pagination — overlaid on the image, left edge, vertically centered */}
+          <div className="absolute left-4 top-1/2 flex -translate-y-1/2 flex-col gap-1.5">
+            {heroVariants.map((v, i) => (
+              <button
+                key={v.title}
+                aria-label={`Show ${v.title}`}
+                onClick={() => setActive(i)}
+                className="h-8 w-1 overflow-hidden rounded-full bg-[#15130f]/15"
+              >
+                <span
+                  key={i === active ? `active-${active}` : "idle"}
+                  className={`block w-full rounded-full bg-[#15130f]/60 ${
+                    i === active && reduceMotion ? "h-full" : "h-0"
+                  }`}
+                  style={
+                    i === active && !reduceMotion
+                      ? { animation: `fillBarV ${intervalMs}ms linear forwards` }
+                      : undefined
+                  }
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+        <div key={active} className="min-w-0 animate-[slideInLR_0.5s_ease]">
+          <Icon size={24} className="text-fg" strokeWidth={1.75} />
+          <h3 className="mt-5 font-display text-xl font-semibold tracking-tight text-fg md:text-2xl">
+            {variant.title}
+          </h3>
+          <p className="mt-2.5 text-sm leading-relaxed text-muted">
+            {variant.body}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Services() {
   const ref = useScrollReveal<HTMLElement>();
 
@@ -111,6 +198,7 @@ export default function Services() {
 
         {/* bento grid — diagonal cards carry imagery */}
         <div className="mt-16 grid gap-5 md:grid-cols-2">
+          <HeroServiceCard />
           {services.map((s) => {
             const isMedia = "image" in s;
             const Icon = s.Icon;

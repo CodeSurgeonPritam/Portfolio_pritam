@@ -296,6 +296,24 @@ html.lenis body {
     opacity: 1;
   }
 }
+
+/* Story-style pagination fill — active segment counts down to the next slide */
+@keyframes fillBar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes fillBarV {
+  from {
+    height: 0%;
+  }
+  to {
+    height: 100%;
+  }
+}
 @keyframes modalIn {
   from {
     opacity: 0;
