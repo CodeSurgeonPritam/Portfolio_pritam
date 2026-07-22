@@ -183,9 +183,11 @@ export default function Hero() {
             data-hero-overline
             className="mb-8 inline-flex items-center gap-2.5 font-mono text-xs lowercase tracking-[0.02em] text-muted"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+            <span className="radar-ping">
+              <span className="radar-ping-wave" />
+              <span className="radar-ping-wave radar-ping-wave-2" />
+              <span className="radar-ping-ring" />
+              <span className="radar-ping-dot" />
             </span>
             available for work
           </p>

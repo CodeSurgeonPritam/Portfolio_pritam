@@ -25,7 +25,7 @@ export default function Experience() {
             className="relative inline-flex items-center gap-2 rounded-full border border-line bg-surface/50 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.2em] text-muted"
           >
             <CircleDot size={13} className="text-accent" />
-            Career
+          <span className="shimmer-text">Experience</span>
           </span>
           <h2
             data-reveal

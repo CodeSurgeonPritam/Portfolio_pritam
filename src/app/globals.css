@@ -334,6 +334,100 @@ html.lenis body {
   }
 }
 
+/* Shimmer sweep — a bright band travels right → left across the text via
+   an animated background-clip gradient, looping forever. */
+.shimmer-text {
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    var(--muted) 35%,
+    var(--fg) 50%,
+    var(--muted) 65%,
+    var(--muted) 100%
+  );
+  background-size: 600% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerSweep 14s linear infinite;
+}
+@keyframes shimmerSweep {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 600% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-text {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: var(--fg);
+  }
+}
+
+/* Radar ping — a static ring + dot with two staggered pulse waves expanding
+   outward and fading, offset by half the cycle so a wave departs every
+   0.9s. Used for the "available for work" status indicator. */
+.radar-ping {
+  position: relative;
+  display: inline-flex;
+  height: 10px;
+  width: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.radar-ping-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 9999px;
+  border: 1px solid var(--accent);
+  opacity: 0.5;
+}
+.radar-ping-dot {
+  position: relative;
+  z-index: 1;
+  height: 4px;
+  width: 4px;
+  border-radius: 9999px;
+  background: var(--accent);
+}
+.radar-ping-wave {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px solid var(--accent);
+  animation: radarPing 1.8s ease-out infinite;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+.radar-ping-wave-2 {
+  animation-delay: 0.9s;
+}
+@keyframes radarPing {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  55% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(4.4);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .radar-ping-wave {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 /* ============================================================
    Custom cursor (fine-pointer devices only). The Cursor
    component toggles html.cursor-none.

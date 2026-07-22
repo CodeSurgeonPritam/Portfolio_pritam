@@ -101,8 +101,8 @@ export default function Skills() {
             data-reveal
             className="relative inline-flex items-center gap-2 rounded-full border border-line bg-surface/50 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.2em] text-muted"
           >
-            <CircleDot size={13} className="text-accent" />
-            Toolkit
+           <CircleDot size={13} className="text-accent" />
+          <span className="shimmer-text">Skills</span>
           </span>
           <h2
             data-reveal

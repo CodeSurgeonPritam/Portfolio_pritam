@@ -81,7 +81,7 @@ export default function About() {
           className="relative inline-flex items-center gap-2 rounded-full border border-line bg-surface/50 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.2em] text-muted"
         >
           <CircleDot size={13} className="text-accent" />
-          About
+          <span className="shimmer-text">About</span>
         </span>
         <h2
           data-reveal
