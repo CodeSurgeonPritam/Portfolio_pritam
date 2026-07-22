@@ -394,13 +394,13 @@ html.lenis body {
   height: 4px;
   width: 4px;
   border-radius: 9999px;
-  background: var(--accent);
+  background: #047927;
 }
 .radar-ping-wave {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  border: 1px solid var(--accent);
+  border: 1px solid #047927;
   animation: radarPing 1.8s ease-out infinite;
   will-change: transform, opacity;
   backface-visibility: hidden;
@@ -410,14 +410,14 @@ html.lenis body {
 }
 @keyframes radarPing {
   0% {
-    transform: scale(0.6);
+    transform: scale(0.7);
     opacity: 0.9;
   }
   55% {
     opacity: 0;
   }
   100% {
-    transform: scale(4.4);
+    transform: scale(6.4);
     opacity: 0;
   }
 }
