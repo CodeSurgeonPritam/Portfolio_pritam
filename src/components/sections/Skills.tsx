@@ -95,7 +95,7 @@ export default function Skills() {
         <div className="relative text-center">
           <div
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-[-8rem] h-[30rem] w-[30rem] max-w-[80vw] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
+            className="pointer-events-none absolute left-1/2 -top-32 h-120 w-120 max-w-[80vw] -translate-x-1/2 rounded-full [background:radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]"
           />
           <span
             data-reveal
@@ -117,7 +117,7 @@ export default function Skills() {
             The technologies I reach for to design, build and ship production
             web applications end-to-end.
           </p>
-        </div>
+        </div>p
 
         {/* index list (left) + active category panel (right) */}
         <div
@@ -171,7 +171,7 @@ export default function Skills() {
               </div>
             </div>
 
-            <p className="mt-6 max-w-sm text-base leading-relaxed text-muted">
+            <p className="mt-6 max-w-md text-base leading-relaxed text-muted">
               {BLURB[group.title]}
             </p>
 

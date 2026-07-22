@@ -98,9 +98,9 @@ export default function About() {
         </p>
       </div>
 
-      <div className="mt-20 grid gap-16 md:grid-cols-12 md:gap-8">
+      <div className="mt-20 grid gap-16  md:gap-8">
         {/* left — narrative */}
-        <div data-reveal data-parallax="-6" className="md:col-span-6 lg:col-span-7">
+        <div data-reveal data-parallax="-6" className="md:col-span-6 lg:col-span-7 max-w-4xl">
           <p className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.2em] text-muted">
             {profile.role}
             <span className="h-1 w-1 rounded-full bg-fg/25" />
@@ -137,7 +137,7 @@ export default function About() {
         </div>
 
         {/* right — the numbers, plain and typographic */}
-        <div data-reveal className="md:col-span-6 lg:col-span-5">
+        <div data-reveal className="md:col-span-6 lg:col-span-5 justify-end">
           <div className="grid grid-cols-2 gap-x-8 gap-y-10 border-t border-line pt-8">
             {stats.map((s) => (
               <div key={s.label} className="border-l border-line pl-5">

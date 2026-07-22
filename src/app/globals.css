@@ -11,18 +11,22 @@
   --fg: #ededed;
   --muted: #8a8a8a;
   --line: rgba(255, 255, 255, 0.08);
-  --accent: #ff5a1f;
+  --accent: #e5e5e5;
   --accent-fg: #0a0a0a;
   /* secondary tone for glows / silk tint */
-  --accent-2: #16b8a3;
+  --accent-2: #8a8a8a;
   /* live-swappable display font (FontSwitcher sets html[data-font]) */
-  --display-active: var(--font-sora);
+  --display-active: var(--font-jura);
   /* serif used for italic accent words in headlines (Fade editorial look) */
   --font-serif: var(--font-fraunces);
 }
 
 /* Accent choices — toggled by the AccentSwitcher via html[data-accent].
-   Orange is the :root default above; --accent-fg stays dark for all. */
+   Mono is the :root default above; --accent-fg stays dark for all. */
+html[data-accent="orange"] {
+  --accent: #ff5a1f;
+  --accent-2: #16b8a3;
+}
 html[data-accent="lime"] {
   --accent: #c5f04f;
   --accent-2: #7bd389;
@@ -43,12 +47,9 @@ html[data-accent="amber"] {
   --accent: #fbbf24;
   --accent-2: #fb923c;
 }
-html[data-accent="mono"] {
-  --accent: #e5e5e5;
-  --accent-2: #8a8a8a;
-}
 
-/* Display-font choices — toggled by the FontSwitcher via html[data-font] */
+/* Display-font choices — toggled by the FontSwitcher via html[data-font].
+   Jura is the :root default above. */
 html[data-font="sora"] {
   --display-active: var(--font-sora);
 }
@@ -63,9 +64,6 @@ html[data-font="outfit"] {
 }
 html[data-font="dm-sans"] {
   --display-active: var(--font-dm-sans);
-}
-html[data-font="jura"] {
-  --display-active: var(--font-jura);
 }
 html[data-font="fraunces"] {
   --display-active: var(--font-fraunces);
