@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useRef } from "react";
+import type Lenis from "lenis";
 import {
   ArrowUpRight,
   CircleDot,
@@ -65,6 +66,16 @@ export default function About() {
   const ref = useScrollReveal<HTMLElement>();
   const fillWrapRef = useRef<HTMLDivElement>(null);
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const goToSkillGroup = (e: React.MouseEvent<HTMLAnchorElement>, title: string) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent("skills:select", { detail: title }));
+    const target = document.querySelector("#skills");
+    if (!target) return;
+    const lenis = (window as unknown as { __lenis?: Lenis }).__lenis;
+    if (lenis) lenis.scrollTo(target as HTMLElement, { offset: -72 });
+    else target.scrollIntoView({ behavior: "smooth" });
+  };
 
   useGSAP(
     () => {
@@ -231,8 +242,10 @@ export default function About() {
             {FOCUS_AREAS.map((f, i) => {
               const Icon = f.icon;
               return (
-                <div
+                <a
                   key={f.title}
+                  href="#skills"
+                  onClick={(e) => goToSkillGroup(e, f.title)}
                   className="group flex items-start gap-4 border-b border-line py-5 transition-colors duration-300 hover:border-accent/30"
                 >
                   <span className="mt-1 font-mono text-[10px] text-muted/50 transition-colors duration-300 group-hover:text-accent">
@@ -249,7 +262,11 @@ export default function About() {
                       {f.blurb}
                     </p>
                   </span>
-                </div>
+                  <ArrowUpRight
+                    size={16}
+                    className="mt-1 shrink-0 -translate-y-0.5 translate-x-0.5 text-accent opacity-0 transition-all duration-300 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:translate-x-0 [@media(hover:hover)]:group-hover:opacity-100"
+                  />
+                </a>
               );
             })}
           </div>
