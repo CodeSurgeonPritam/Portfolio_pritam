@@ -4,10 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import {
   Braces,
   LayoutTemplate,
+  Boxes,
+  Server,
+  ShieldCheck,
   Database,
-  Cloud,
-  Sparkles,
   ShoppingBag,
+  Smartphone,
+  Cloud,
+  Wrench,
+  Radio,
+  Sparkles,
+  GitBranch,
   CircleDot,
   Asterisk,
 } from "lucide-react";
@@ -15,21 +22,33 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { skillGroups } from "@/lib/data";
 
 const ICONS: Record<string, typeof Braces> = {
-  Languages: Braces,
-  Frontend: LayoutTemplate,
-  "Backend & Auth": Database,
-  "Cloud & Tools": Cloud,
-  "AI & Dev Tools": Sparkles,
-  "E-Commerce": ShoppingBag,
+  "Frontend Engineering": LayoutTemplate,
+  "State & Data Management": Boxes,
+  "Backend Engineering": Server,
+  "Authentication & Security": ShieldCheck,
+  Database: Database,
+  "Commerce Engineering": ShoppingBag,
+  "Mobile Development": Smartphone,
+  "Cloud & DevOps": Cloud,
+  "Developer Experience": Wrench,
+  "Real-time Systems": Radio,
+  "AI Engineering": Sparkles,
+  "Engineering Practices": GitBranch,
 };
 
 const BLURB: Record<string, string> = {
-  Languages: "The languages I write, day in and day out.",
-  Frontend: "Building fast, accessible, production-grade interfaces.",
-  "Backend & Auth": "APIs, data and secure access, done right.",
-  "Cloud & Tools": "Where I ship, host and collaborate.",
-  "AI & Dev Tools": "Working faster with AI in the loop.",
-  "E-Commerce": "Shopify-powered commerce, end to end.",
+  "Frontend Engineering": "Building fast, accessible, production-grade interfaces.",
+  "State & Data Management": "Keeping client state, forms and data fetching predictable.",
+  "Backend Engineering": "APIs and services built to hold up under real load.",
+  "Authentication & Security": "Locking down access without getting in the user's way.",
+  Database: "Modeling and querying data that scales cleanly.",
+  "Commerce Engineering": "Shopify-powered commerce, subscriptions and billing, end to end.",
+  "Mobile Development": "Taking the same product logic to iOS and Android.",
+  "Cloud & DevOps": "Where I ship, host and collaborate.",
+  "Developer Experience": "The daily toolkit that keeps quality high and iteration fast.",
+  "Real-time Systems": "Live updates, queues and background work, done right.",
+  "AI Engineering": "Working faster with AI in the loop.",
+  "Engineering Practices": "The habits and architecture choices behind every project.",
 };
 
 /** Comparison-style pill — top hairline border with a soft glow band. */
@@ -147,7 +166,7 @@ export default function Skills() {
                   {group.title}
                 </p>
                 <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted">
-                  {group.skills.length} skills
+                  {group.subGroups.reduce((n, sg) => n + sg.skills.length, 0)} skills
                 </p>
               </div>
             </div>
@@ -156,9 +175,18 @@ export default function Skills() {
               {BLURB[group.title]}
             </p>
 
-            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {group.skills.map((s) => (
-                <SkillPill key={s} label={s} />
+            <div className="mt-8 space-y-7">
+              {group.subGroups.map((sg) => (
+                <div key={sg.label}>
+                  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-accent/70">
+                    {sg.label}
+                  </p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {sg.skills.map((s) => (
+                      <SkillPill key={s} label={s} />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>

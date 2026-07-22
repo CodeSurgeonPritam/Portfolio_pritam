@@ -16,15 +16,15 @@ export default function Home() {
     <main id="main-content" className="relative">
       <Hero />
       <About />
+      <Skills />
+      <Experience />
       <Services />
       <Approach />
-      <Skills />
       <Projects />
-      <Experience />
       <Comparison />
       <Pricing />
-      <Faq />
       <Contact />
+      <Faq />
       <Footer />
     </main>
   );
